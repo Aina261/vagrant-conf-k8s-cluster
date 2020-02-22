@@ -20,7 +20,7 @@ Vagrant.configure(2) do |config|
     # k8s-master.vm.provision "shell", path: "provision_k8s-master.sh"
   end
 
-  NodeCount = 4
+  NodeCount = 3
 
   # Kubernetes Worker Nodes
   (1..NodeCount).each do |i|
