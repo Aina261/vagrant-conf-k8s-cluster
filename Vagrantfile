@@ -5,7 +5,9 @@ ENV['VAGRANT_NO_PARALLEL'] = 'yes'
 
 Vagrant.configure(2) do |config|
 
-  # config.vm.provision "shell", path: "provision.sh"
+  config.vm.provision "ansible" do |ansible|
+    ansible.playbook = "playbook.yml"
+  end
 
   # Kubernetes Master Server
   config.vm.define "k8s-master" do |k8smaster|
@@ -17,13 +19,15 @@ Vagrant.configure(2) do |config|
       v.memory = 2048
       v.cpus = 2
     end
-    # k8s-master.vm.provision "shell", path: "provision_k8s-master.sh"
+    k8smaster.vm.provision "ansible" do |ansible|
+       ansible.playbook = "master.playbook.yml"
+    end
   end
 
-  NodeCount = 3
+  node = 3
 
   # Kubernetes Worker Nodes
-  (1..NodeCount).each do |i|
+  (1..node).each do |i|
     config.vm.define "k8s-worker-#{i}" do |k8sworker|
       k8sworker.vm.box = "centos/7"
       k8sworker.vm.hostname = "k8s-worker-#{i}.dns.com"
@@ -33,7 +37,9 @@ Vagrant.configure(2) do |config|
         v.memory = 2048
         v.cpus = 2
       end
-      # k8s-worker.vm.provision "shell", path: "provision_k8s-worker.sh"
+      k8sworker.vm.provision "ansible" do |ansible|
+        ansible.playbook = "worker.playbook.yml"
+      end
     end
   end
 
